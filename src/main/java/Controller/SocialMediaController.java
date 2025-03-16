@@ -1,7 +1,14 @@
 package Controller;
 
+import Model.Account;
+import Model.Message;
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -9,6 +16,14 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    private AccountService accountService;
+    private MessageService messageService;
+
+    public SocialMediaController() {
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -60,16 +75,40 @@ public class SocialMediaController {
 
     
     //POST - CREATE
-    private void postMessageHandler(Context ctx) {
-        ctx.json("test");
+    private void postMessageHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(ctx.body(), Message.class);
+        Message result = messageService.createMessage(message);
+        if(result != null) {
+            ctx.json(om.writeValueAsString(result));
+            ctx.status(200);
+        } else {
+            ctx.status(400);
+        }
     }
 
-    private void postUserHandler(Context ctx) {
-        ctx.json("test");
+    private void postUserHandler(Context ctx) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(ctx.body(), Account.class);
+        Account result = accountService.registerUser(account);
+        if(result != null) {
+            ctx.json(om.writeValueAsString(result));
+            ctx.status(200);
+        } else {
+            ctx.status(400);
+        }
     }
 
-    private void login(Context ctx) {
-        ctx.json("test");
+    private void login(Context ctx) throws JsonProcessingException {
+        ObjectMapper om = new ObjectMapper();
+        Account account = om.readValue(ctx.body(), Account.class);
+        Account result = accountService.registerUser(account);
+        if(result != null) {
+            ctx.json(om.writeValueAsString(result));
+            ctx.status(200);
+        } else {
+            ctx.status(401);
+        }
     }
 
     //PATCH

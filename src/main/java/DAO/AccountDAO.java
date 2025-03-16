@@ -37,6 +37,58 @@ public class AccountDAO {
         Connection conn = ConnectionUtil.getConnection();
 
         PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, account.getUsername());
+        ps.setString(2, account.getPassword());
+        ResultSet rs = ps.executeQuery();
+
+        while(rs.next()) {
+            Account existingAccount = new Account(rs.getInt("account_id"), 
+                                    rs.getString("username"), 
+                                    rs.getString("password"));
+
+            return existingAccount;
+        }
+
+        //error/failed
+        return null;
+    }
+
+    public Account getAccountFromEmail(Account account) throws SQLException {
+        String sql = "SELECT * FROM account WHERE username=?";
+        Connection conn = ConnectionUtil.getConnection();
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, account.getUsername());
+        ps.setString(2, account.getPassword());
+        ResultSet rs = ps.executeQuery();
+
+        while(rs.next()) {
+            Account existingAccount = new Account(rs.getInt("account_id"), 
+                                    rs.getString("username"), 
+                                    rs.getString("password"));
+
+            return existingAccount;
+        }
+
+        //error/failed
+        return null;
+    }
+
+    public Account getAccountFromID(int accountID) throws SQLException {
+        String sql = "SELECT * FROM account WHERE account_id=?";
+        Connection conn = ConnectionUtil.getConnection();
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, accountID);
+        ResultSet rs = ps.executeQuery();
+
+        while(rs.next()) {
+            Account existingAccount = new Account(rs.getInt("account_id"), 
+                                    rs.getString("username"), 
+                                    rs.getString("password"));
+
+            return existingAccount;
+        }
 
         //error/failed
         return null;
