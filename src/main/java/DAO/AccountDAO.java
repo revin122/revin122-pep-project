@@ -59,7 +59,6 @@ public class AccountDAO {
 
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, account.getUsername());
-        ps.setString(2, account.getPassword());
         ResultSet rs = ps.executeQuery();
 
         while(rs.next()) {

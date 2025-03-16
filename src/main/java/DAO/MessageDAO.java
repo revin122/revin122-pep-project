@@ -20,7 +20,7 @@ public class MessageDAO {
         PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setInt(1, message.getPosted_by());
         ps.setString(2, message.getMessage_text());
-        ps.setLong(1, message.getTime_posted_epoch());
+        ps.setLong(3, message.getTime_posted_epoch());
         int result = ps.executeUpdate();
 
         if(result > 0) {
