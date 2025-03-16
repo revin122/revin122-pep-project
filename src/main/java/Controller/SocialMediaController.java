@@ -16,7 +16,23 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
+
+        //GET
         app.get("example-endpoint", this::exampleHandler);
+        app.get("messages", this::getAllMessageHandler);
+        app.get("accounts/{id}/messages", this::getAllUserMessageHandler);
+        app.get("messages/{id}", this::getMessageFromMessageIDHandler);
+    
+        //POST
+        app.post("messages", this::postMessageHandler); 
+        app.post("register", this::postUserHandler);
+        app.post("login", this::login);
+    
+        //PATCH
+        app.patch("messages/{id}", this::patchMessageHandler);
+    
+        //DELETE
+        app.delete("messages/{id}", this::deleteMessageHandler);
 
         return app;
     }
@@ -29,5 +45,41 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
+    //GET
+    private void getAllMessageHandler(Context ctx) {
+        ctx.json("test");
+    }
+
+    private void getAllUserMessageHandler(Context ctx) {
+        ctx.json("test");
+    }
+
+    private void getMessageFromMessageIDHandler(Context ctx) {
+        ctx.json("test");
+    }
+
+    
+    //POST - CREATE
+    private void postMessageHandler(Context ctx) {
+        ctx.json("test");
+    }
+
+    private void postUserHandler(Context ctx) {
+        ctx.json("test");
+    }
+
+    private void login(Context ctx) {
+        ctx.json("test");
+    }
+
+    //PATCH
+    private void patchMessageHandler(Context ctx) {
+        ctx.json("test");
+    }
+
+    //REMOVE
+    private void deleteMessageHandler(Context ctx) {
+        ctx.json("test");
+    }
 
 }
