@@ -36,26 +36,25 @@ public class MessageService {
         return null;
     }
 
-/*
-
-## 4: Our API should be able to retrieve all messages.
-
-As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages.
-
-- The response body should contain a JSON representation of a list containing all messages retrieved from the database. It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
-*/
     public List<Message> getAllMessages() {
         List<Message> messageList = new ArrayList<Message>();
-
+        try {
+            messageList = messageDAO.getAllMessages();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
         return messageList;
     }
-/*
-## 5: Our API should be able to retrieve a message by its ID.
 
-As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages/{message_id}.
-
-- The response body should contain a JSON representation of the message identified by the message_id. It is expected for the response body to simply be empty if there is no such message. The response status should always be 200, which is the default.
-*/
+    public Message getMessage(int messageID) {
+        try {
+            Message message = messageDAO.getMessageFromID(messageID);
+            return message;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
 /*
 ## 6: Our API should be able to delete a message identified by a message ID.
 
@@ -64,6 +63,7 @@ As a User, I should be able to submit a DELETE request on the endpoint DELETE lo
 - The deletion of an existing message should remove an existing message from the database. If the message existed, the response body should contain the now-deleted message. The response status should be 200, which is the default.
 - If the message did not exist, the response status should be 200, but the response body should be empty. This is because the DELETE verb is intended to be idempotent, ie, multiple calls to the DELETE endpoint should respond with the same type of response.
 */
+    
 /*
 ## 7: Our API should be able to update a message text identified by a message ID.
 

@@ -2,6 +2,7 @@ package DAO;
 
 import java.util.List;
 import java.util.ArrayList;
+
 import Model.Message;
 import Util.ConnectionUtil;
 
@@ -35,15 +36,40 @@ public class MessageDAO {
         return null;
     }
 
-    public Message getAllMessages() throws SQLException {
+    public List<Message> getAllMessages() throws SQLException {
         String sql = "SELECT * FROM message";
         Connection conn = ConnectionUtil.getConnection();
 
         PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
 
+        List<Message> messageList = new ArrayList<Message>();
         while(rs.next()) {
-            //TODO STOPPED HERE
+            Message message = new Message(rs.getInt("message_id"), 
+                                    rs.getInt("posted_by"), 
+                                    rs.getString("message_text"),
+                                    rs.getLong("time_posted_epoch"));
+            messageList.add(message);
+        }
+
+        return messageList;
+    }
+
+    public Message getMessageFromID(int messageID) throws SQLException {
+        String sql = "SELECT * FROM message WHERE message_id=?";
+        Connection conn = ConnectionUtil.getConnection();
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, messageID);
+        ResultSet rs = ps.executeQuery();
+
+        while(rs.next()) {
+            Message message = new Message(rs.getInt("message_id"), 
+                                    rs.getInt("posted_by"), 
+                                    rs.getString("message_text"),
+                                    rs.getLong("time_posted_epoch"));
+
+            return message;
         }
 
         //error/failed

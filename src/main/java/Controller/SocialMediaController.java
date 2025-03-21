@@ -6,6 +6,7 @@ import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -61,8 +62,10 @@ public class SocialMediaController {
     }
 
     //GET
-    private void getAllMessageHandler(Context ctx) {
-        ctx.json("test");
+    private void getAllMessageHandler(Context ctx) throws JsonProcessingException {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+        ctx.status(200);
     }
 
     private void getAllUserMessageHandler(Context ctx) {
@@ -70,7 +73,9 @@ public class SocialMediaController {
     }
 
     private void getMessageFromMessageIDHandler(Context ctx) {
-        ctx.json("test");
+        int messageID = Integer.parseInt(ctx.pathParam("id"));
+        ctx.json(messageService.getMessage(messageID));
+        ctx.status(200);
     }
 
     
@@ -118,7 +123,7 @@ public class SocialMediaController {
 
     //REMOVE
     private void deleteMessageHandler(Context ctx) {
-        ctx.json("test");
+        int messageID = Integer.parseInt(ctx.pathParam("id"));
     }
 
 }
