@@ -117,13 +117,22 @@ public class SocialMediaController {
     }
 
     //PATCH
-    private void patchMessageHandler(Context ctx) {
+    private void patchMessageHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper om = new ObjectMapper();
+        Message message = om.readValue(ctx.body(), Message.class);
+        int messageID = Integer.parseInt(ctx.pathParam("id"));
+        message.setMessage_id(messageID);
+
+        
+
         ctx.json("test");
     }
 
     //REMOVE
     private void deleteMessageHandler(Context ctx) {
         int messageID = Integer.parseInt(ctx.pathParam("id"));
+        ctx.json(messageService.deleteMessage(messageID));
+        ctx.status(200);
     }
 
 }

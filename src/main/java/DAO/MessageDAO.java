@@ -75,4 +75,41 @@ public class MessageDAO {
         //error/failed
         return null;
     }
+
+    public Message deleteMessageFromID(int messageID) throws SQLException {
+        //check if message exists
+        Message messageToDelete = getMessageFromID(messageID);
+        
+        if(messageToDelete != null) {
+            String sql = "DELETE FROM message where message_id=?";
+            Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, messageID);
+            int success = ps.executeUpdate();
+            if(success > 0)
+                return messageToDelete;
+        }
+        return null;
+    }
+
+    public Message updateMessage(Message messageToUpdate) throws SQLException {
+        //check if message exists
+        Message newMessage = getMessageFromID(messageToUpdate.getMessage_id());
+
+        if(newMessage != null) {
+            String sql = "UPDATE message SET posted_by=?,message_text=?,time_posted_epoch=? WHERE message_id=?";
+            Connection conn = ConnectionUtil.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, messageToUpdate.getPosted_by());
+            ps.setString(2, messageToUpdate.getMessage_text());
+            ps.setLong(3, messageToUpdate.getTime_posted_epoch());
+            ps.setInt(4, messageToUpdate.getMessage_id());
+            int success = ps.executeUpdate();
+
+            if(success > 0) 
+                return messageToUpdate;
+        }
+
+        return null;
+    }
 }
