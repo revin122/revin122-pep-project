@@ -139,4 +139,15 @@ public class Message {
                 ", time_posted_epoch=" + time_posted_epoch +
                 '}';
     }
+
+    public void copy(Message message) {
+        if(message.getMessage_id() != 0)
+            this.message_id = message.getMessage_id();
+        if(message.getPosted_by() != 0)
+            this.posted_by = message.getPosted_by();
+        if(message.getMessage_text() != null)
+            this.message_text = message.getMessage_text();
+        if(message.getTime_posted_epoch() != 0)    
+            this.time_posted_epoch = message.getTime_posted_epoch();
+    }
 }

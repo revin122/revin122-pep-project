@@ -69,12 +69,18 @@ public class SocialMediaController {
     }
 
     private void getAllUserMessageHandler(Context ctx) {
-        ctx.json("test");
+        int accountID = Integer.parseInt(ctx.pathParam("id"));
+        ctx.json(messageService.getMessagesOfAccountID(accountID));
+        ctx.status(200);
     }
 
     private void getMessageFromMessageIDHandler(Context ctx) {
         int messageID = Integer.parseInt(ctx.pathParam("id"));
-        ctx.json(messageService.getMessage(messageID));
+
+        Message gotMessage = messageService.getMessage(messageID);
+        if(gotMessage != null)
+            ctx.json(gotMessage);
+
         ctx.status(200);
     }
 
@@ -122,16 +128,22 @@ public class SocialMediaController {
         Message message = om.readValue(ctx.body(), Message.class);
         int messageID = Integer.parseInt(ctx.pathParam("id"));
         message.setMessage_id(messageID);
+        Message resultMessage = messageService.updateMessage(message);
 
-        
-
-        ctx.json("test");
+        if(resultMessage != null) {
+            ctx.json(resultMessage);
+            ctx.status(200);    
+        } else {
+            ctx.status(400);
+        }
     }
 
     //REMOVE
     private void deleteMessageHandler(Context ctx) {
         int messageID = Integer.parseInt(ctx.pathParam("id"));
-        ctx.json(messageService.deleteMessage(messageID));
+        Message deletedMessage = messageService.deleteMessage(messageID);
+        if(deletedMessage != null)
+            ctx.json(deletedMessage);
         ctx.status(200);
     }
 

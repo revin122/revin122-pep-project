@@ -81,7 +81,7 @@ public class MessageDAO {
         Message messageToDelete = getMessageFromID(messageID);
         
         if(messageToDelete != null) {
-            String sql = "DELETE FROM message where message_id=?";
+            String sql = "DELETE FROM message WHERE message_id=?";
             Connection conn = ConnectionUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, messageID);
@@ -97,19 +97,67 @@ public class MessageDAO {
         Message newMessage = getMessageFromID(messageToUpdate.getMessage_id());
 
         if(newMessage != null) {
-            String sql = "UPDATE message SET posted_by=?,message_text=?,time_posted_epoch=? WHERE message_id=?";
+            //String sql = "UPDATE message SET posted_by=?,message_text=?,time_posted_epoch=? WHERE message_id=?";
+            String sql = "UPDATE message SET ";
+            List<String> sqlUpdateParams = new ArrayList<>();
+            if(messageToUpdate.getPosted_by() > 0) {
+                sqlUpdateParams.add("posted_by");
+                sql += "posted_by=?,";
+            }
+            if(messageToUpdate.getMessage_text() != null) {
+                sqlUpdateParams.add("message_text");
+                sql += "message_text=?,";
+            }
+            if(messageToUpdate.getTime_posted_epoch() > 0) {
+                sqlUpdateParams.add("time_posted_epoch");
+                sql += "time_posted_epoch=?,";
+            }
+            //remove comma
+            sql = sql.substring(0,sql.length()-1);
+            sqlUpdateParams.add("message_id");
+            sql += " WHERE message_id=?";
+            
             Connection conn = ConnectionUtil.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, messageToUpdate.getPosted_by());
-            ps.setString(2, messageToUpdate.getMessage_text());
-            ps.setLong(3, messageToUpdate.getTime_posted_epoch());
-            ps.setInt(4, messageToUpdate.getMessage_id());
+
+            for(int i = 1; i <= sqlUpdateParams.size(); i++) {
+                if(sqlUpdateParams.get(i-1).equalsIgnoreCase("posted_by"))
+                    ps.setInt(i, messageToUpdate.getPosted_by());
+                if(sqlUpdateParams.get(i-1).equalsIgnoreCase("message_text"))
+                    ps.setString(i, messageToUpdate.getMessage_text());
+                if(sqlUpdateParams.get(i-1).equalsIgnoreCase("time_posted_epoch"))
+                    ps.setLong(i, messageToUpdate.getTime_posted_epoch());
+                if(sqlUpdateParams.get(i-1).equalsIgnoreCase("message_id"))
+                    ps.setInt(i, messageToUpdate.getMessage_id());
+            }
+
             int success = ps.executeUpdate();
 
-            if(success > 0) 
-                return messageToUpdate;
+            if(success > 0) {
+                newMessage.copy(messageToUpdate);
+                return newMessage;
+            }
+        }
+        return null;
+    }
+
+    public List<Message> getAllMessagesFromAcccountID(int accountID) throws SQLException {
+        String sql = "SELECT * FROM message WHERE posted_by=?";
+        Connection conn = ConnectionUtil.getConnection();
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, accountID);
+        ResultSet rs = ps.executeQuery();
+
+        List<Message> messageList = new ArrayList<Message>();
+        while(rs.next()) {
+            Message message = new Message(rs.getInt("message_id"), 
+                                    rs.getInt("posted_by"), 
+                                    rs.getString("message_text"),
+                                    rs.getLong("time_posted_epoch"));
+            messageList.add(message);
         }
 
-        return null;
+        return messageList;
     }
 }
